@@ -10,4 +10,7 @@
 	name = egarmin
 	email = egarmin@example.com
 
-3.	
+3. Запустить idea:
+	а) Create New Project -> Maven
+			ArtifactId = test
+			GroupId    = javarush
