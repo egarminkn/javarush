@@ -24,14 +24,14 @@ public class DbTestCreator extends Creator {
                                @RequestParam(value="port",  required=false, defaultValue="3306")      String port,
                                Model model) throws SQLException, IOException {
         DataSource dataSource = getDatasource(login, pass, url, port);
-        Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement();
-
-        BufferedReader testDbSql = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("sql/create-db-test.sql")));
-        while (testDbSql.ready()) {
-            statement.addBatch(testDbSql.readLine());
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();) {
+            BufferedReader testDbSql = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("sql/create-db-test.sql")));
+            while (testDbSql.ready()) {
+                statement.addBatch(testDbSql.readLine());
+            }
+            statement.executeBatch();
         }
-        statement.executeBatch();
 
         model.addAttribute("login", login);
         return "redirect:/db-installer-step2";
