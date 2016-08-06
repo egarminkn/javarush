@@ -34,7 +34,7 @@ public class DbTestCreator extends Creator {
         statement.executeBatch();
 
         model.addAttribute("login", login);
-        return "ru/javarush/installer/create-ok";
+        return "redirect:/db-installer-step2";
     }
 
     @RequestMapping(value = "/db-installer-step1", method = RequestMethod.GET)
