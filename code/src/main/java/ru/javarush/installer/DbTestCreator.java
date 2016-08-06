@@ -1,6 +1,5 @@
 package ru.javarush.installer;
 
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,16 +15,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 @Controller
-public class DbTestCreator {
-
-    public DataSource getDatasource(String login, String pass, String url, String port){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver"); // com.mysql.jdbc.Driver - deprecated
-        dataSource.setUsername(login);
-        dataSource.setPassword(pass);
-        dataSource.setUrl(url + ":" + port + "/?serverTimezone=UTC&useSSL=false");
-        return dataSource;
-    }
+public class DbTestCreator extends Creator {
 
     @RequestMapping(value = "/create-db-test", method = RequestMethod.POST)
     public String createDbTest(@RequestParam(value="login", required=false, defaultValue="root")      String login,
@@ -44,7 +34,7 @@ public class DbTestCreator {
         statement.executeBatch();
 
         model.addAttribute("login", login);
-        return "ru/javarush/installer/create-db-test-ok";
+        return "ru/javarush/installer/create-ok";
     }
 
     @RequestMapping(value = "/db-installer-step1", method = RequestMethod.GET)

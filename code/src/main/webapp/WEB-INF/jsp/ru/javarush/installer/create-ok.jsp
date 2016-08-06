@@ -7,10 +7,10 @@
 
 <!DOCTYPE HTML>
 <head>
-    <title>Создание БД test</title>
+    <title>Создание объекта БД</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    Hello <c:out value="${login}" />
+    Создание завершено успешно, <c:out value="${login}" />!
 </body>
 </html>

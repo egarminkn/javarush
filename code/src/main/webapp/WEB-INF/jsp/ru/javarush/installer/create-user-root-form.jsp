@@ -7,14 +7,14 @@
 
 <!DOCTYPE HTML>
 <head>
-    <title>Создание БД test</title>
+    <title>Создание пользователя root</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/ru/javarush/installer/create-db-test-form.css" rel="stylesheet">
+    <link href="/css/ru/javarush/installer/create-user-root-form.css" rel="stylesheet">
 </head>
 <body>
-<form action="/create-db-test" method="post">
-    <h1>Шаг 1. Создание БД test</h1>
+<form action="/create-user-root" method="post">
+    <h1>Шаг 2. Создание пользователя root или изменение его пароля на root</h1>
     <div class="form-group row">
         <label for="url" class="col-xs-2 col-form-label">MySQL URL</label>
         <div class="col-xs-10">
@@ -39,7 +39,7 @@
             <input class="form-control" type="password" value="root" id="pass" name="pass">
         </div>
     </div>
-    <button class="btn btn-success" type="submit">Создать БД test &gt;</button>
+    <button class="btn btn-success" type="submit">Создать пользователя root или изменить его пароль на root &gt;</button>
 </form>
 </body>
 </html>
