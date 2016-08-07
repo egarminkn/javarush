@@ -14,7 +14,7 @@
 </head>
 <body>
 <form action="/create-tables" method="post">
-    <h1>Шаг 3. Создание бизнес-таблиц User и Todo</h1>
+    <h1>Шаг 3/4. Создание бизнес-таблиц User и Todo</h1>
     <div class="form-group row">
         <label for="url" class="col-xs-2 col-form-label">MySQL URL</label>
         <div class="col-xs-10">

@@ -35,7 +35,7 @@ public class DbTestCreator extends Creator {
         }
 
         model.addAttribute("login", login);
-        return "redirect:/db-installer-step2";
+        return "redirect:/db-installer-step2"; // редирект возможен только на GET, поэтому параметры всегда открыты
     }
 
     @RequestMapping(value = "/db-installer-step1", method = RequestMethod.GET)

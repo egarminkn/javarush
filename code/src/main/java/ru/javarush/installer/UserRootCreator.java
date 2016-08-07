@@ -38,7 +38,7 @@ public class UserRootCreator extends Creator {
         }
 
         model.addAttribute("login", login);
-        return "redirect:/db-installer-step3";
+        return "redirect:/db-installer-step3"; // редирект возможен только на GET, поэтому параметры всегда открыты
     }
 
     @RequestMapping(value = "/db-installer-step2", method = RequestMethod.GET)

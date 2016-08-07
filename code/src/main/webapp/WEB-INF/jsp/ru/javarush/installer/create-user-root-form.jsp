@@ -14,7 +14,7 @@
 </head>
 <body>
 <form action="/create-user-root" method="post">
-    <h1>Шаг 2. Создание пользователя root или изменение его пароля на root</h1>
+    <h1>Шаг 2/4. Создание пользователя root или изменение его пароля на root</h1>
     <div class="form-group row">
         <label for="url" class="col-xs-2 col-form-label">MySQL URL</label>
         <div class="col-xs-10">
