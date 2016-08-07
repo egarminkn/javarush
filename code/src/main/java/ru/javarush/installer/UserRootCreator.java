@@ -21,14 +21,15 @@ import java.sql.Statement;
 public class UserRootCreator extends Creator {
 
     @RequestMapping(value = "/create-user-root", method = RequestMethod.POST)
-    public String createUserRoot(@RequestParam(value="login", required=false, defaultValue="root")      String login,
-                                 @RequestParam(value="pass",  required=false, defaultValue="root")      String pass,
-                                 @RequestParam(value="url",   required=false, defaultValue="localhost") String url,
-                                 @RequestParam(value="port",  required=false, defaultValue="3306")      String port,
+    public String createUserRoot(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
+                                 @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
+                                 @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
+                                 @RequestParam(value="port",  required=false, defaultValue="3306")                   String port,
                                  Model model) throws SQLException, IOException {
         DataSource dataSource = getDatasource(login, pass, url, port);
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();) {
+
             BufferedReader rootUserSql = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("sql/create-root-user.sql")));
             while (rootUserSql.ready()) {
                 statement.addBatch(rootUserSql.readLine());
@@ -37,7 +38,7 @@ public class UserRootCreator extends Creator {
         }
 
         model.addAttribute("login", login);
-        return "ru/javarush/installer/create-ok";
+        return "redirect:/db-installer-step3";
     }
 
     @RequestMapping(value = "/db-installer-step2", method = RequestMethod.GET)

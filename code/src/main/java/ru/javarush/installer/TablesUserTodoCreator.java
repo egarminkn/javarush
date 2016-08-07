@@ -7,18 +7,19 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.sql.DataSource;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Created by eGarmin
+ */
 @Controller
-public class DbTestCreator extends Creator {
+public class TablesUserTodoCreator extends Creator {
 
-    @RequestMapping(value = "/create-db-test", method = RequestMethod.POST)
-    public String createDbTest(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
+    @RequestMapping(value = "/create-tables", method = RequestMethod.POST)
+    public String createTables(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
                                @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
                                @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
                                @RequestParam(value="port",  required=false, defaultValue="3306")                   String port,
@@ -27,20 +28,23 @@ public class DbTestCreator extends Creator {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();) {
 
-            BufferedReader testDbSql = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("sql/create-db-test.sql")));
-            while (testDbSql.ready()) {
-                statement.addBatch(testDbSql.readLine());
+            InputStream inputStream = new SequenceInputStream(getClass().getClassLoader().getResourceAsStream("sql/create-user-table.sql"),
+                                                              getClass().getClassLoader().getResourceAsStream("sql/create-todo-table.sql"));
+            BufferedReader tablesSql = new BufferedReader(new InputStreamReader(inputStream));
+            String nextSql = null;
+            while ((nextSql = tablesSql.readLine()) != null) {
+                statement.addBatch(nextSql);
             }
             statement.executeBatch();
         }
 
         model.addAttribute("login", login);
-        return "redirect:/db-installer-step2";
+        return "ru/javarush/installer/create-ok";
     }
 
-    @RequestMapping(value = "/db-installer-step1", method = RequestMethod.GET)
-    public String createDbTestForm() {
-        return "ru/javarush/installer/create-db-test-form";
+    @RequestMapping(value = "/db-installer-step3", method = RequestMethod.GET)
+    public String createTablesForm() {
+        return "ru/javarush/installer/create-tables-user-todo-form";
     }
 
 }

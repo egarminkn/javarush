@@ -10,7 +10,7 @@
     <title>Создание БД test</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/ru/javarush/installer/create-db-test-form.css" rel="stylesheet">
+    <link href="/css/ru/javarush/installer/create-form.css" rel="stylesheet">
 </head>
 <body>
 <form action="/create-db-test" method="post">
