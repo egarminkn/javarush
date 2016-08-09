@@ -6,6 +6,7 @@
 <%@ taglib prefix="fmt"    uri="http://java.sun.com/jsp/jstl/fmt"   %>
 
 <!DOCTYPE HTML>
+<html>
 <head>
     <title>Создание пользователя root</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -13,7 +14,7 @@
     <link href="/css/ru/javarush/installer/create-form.css" rel="stylesheet">
 </head>
 <body>
-<form action="/create-user-root" method="post">
+<form action="/mvc/create-user-root" method="post">
     <h1>Шаг 2/4. Создание пользователя root или изменение его пароля на root</h1>
     <div class="form-group row">
         <label for="url" class="col-xs-2 col-form-label">MySQL URL</label>

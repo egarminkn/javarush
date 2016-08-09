@@ -18,12 +18,12 @@ import java.sql.Statement;
 @Controller
 public class RowsUserTodoCreator extends Creator {
 
-    @RequestMapping(value = "/create-rows", method = RequestMethod.POST)
+    @RequestMapping(value = "/mvc/create-rows", method = RequestMethod.POST)
     public String createRows(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
-                               @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
-                               @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
-                               @RequestParam(value="port",  required=false, defaultValue="3306")                   String port,
-                               Model model) throws SQLException, IOException {
+                             @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
+                             @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
+                             @RequestParam(value="port",  required=false, defaultValue="3306")                   String port,
+                             Model model) throws SQLException, IOException {
         DataSource dataSource = getDatasource(login, pass, url, port);
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();) {
@@ -42,7 +42,7 @@ public class RowsUserTodoCreator extends Creator {
         return "ru/javarush/installer/create-ok";
     }
 
-    @RequestMapping(value = "/db-installer-step4", method = RequestMethod.GET)
+    @RequestMapping(value = "/mvc/db-installer-step4", method = RequestMethod.GET)
     public String createRowsForm() {
         return "ru/javarush/installer/create-rows-user-todo-form";
     }

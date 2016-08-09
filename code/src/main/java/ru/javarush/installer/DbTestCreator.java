@@ -14,10 +14,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * Created by eGarmin
+ */
 @Controller
 public class DbTestCreator extends Creator {
 
-    @RequestMapping(value = "/create-db-test", method = RequestMethod.POST)
+    @RequestMapping(value = "/mvc/create-db-test", method = RequestMethod.POST)
     public String createDbTest(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
                                @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
                                @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
@@ -34,11 +37,10 @@ public class DbTestCreator extends Creator {
             statement.executeBatch();
         }
 
-        model.addAttribute("login", login);
-        return "redirect:/db-installer-step2"; // редирект возможен только на GET, поэтому параметры всегда открыты
+        return "redirect:/mvc/db-installer-step2"; // редирект возможен только на GET, поэтому параметры всегда открыты
     }
 
-    @RequestMapping(value = "/db-installer-step1", method = RequestMethod.GET)
+    @RequestMapping(value = "/mvc/db-installer-step1", method = RequestMethod.GET)
     public String createDbTestForm() {
         return "ru/javarush/installer/create-db-test-form";
     }

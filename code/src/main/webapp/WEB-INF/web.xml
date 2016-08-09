@@ -1,0 +1,43 @@
+<!-- spring boot не читает web.xml. Это только для Tomcat -->
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                             http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+         version="3.0">
+
+    <!--
+    <servlet>
+        <servlet-name>flow-dispatcher</servlet-name>
+        <servlet-class>
+            org.springframework.web.servlet.DispatcherServlet
+        </servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring/webflow/spring-config.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>flow-dispatcher</servlet-name>
+        <url-pattern>/webflow/*</url-pattern>
+    </servlet-mapping>
+    -->
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/jsp/ru/javarush/404.jsp</location>
+    </error-page>
+
+    <!--
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/WEB-INF/jsp/ru/javarush/MyException.jsp</location>
+    </error-page>
+    -->
+
+</web-app>

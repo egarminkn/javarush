@@ -1,0 +1,25 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:flow="http://www.springframework.org/schema/webflow-config"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/webflow-config
+        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
+
+    <!-- Включает возможность использования webflow -->
+    <flow:flow-executor id="flowExecutor" />
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerAdapter">
+        <property name="flowExecutor" ref="flowExecutor" />
+    </bean>
+
+    <!-- Говорим, что по запросу /db-installer-flow запускать web-поток в файле db-installer-webflow.xml -->
+    <flow:flow-registry id="flowRegistry">
+        <flow:flow-location id="db-installer" path="/WEB-INF/spring/webflow/db-installer-webflow.xml" />
+    </flow:flow-registry>
+    <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
+        <property name="flowRegistry" ref="flowRegistry"/>
+        <property name="order" value="0"/>
+    </bean>
+
+</beans>

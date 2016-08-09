@@ -20,7 +20,7 @@ import java.sql.Statement;
 @Controller
 public class UserRootCreator extends Creator {
 
-    @RequestMapping(value = "/create-user-root", method = RequestMethod.POST)
+    @RequestMapping(value = "/mvc/create-user-root", method = RequestMethod.POST)
     public String createUserRoot(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
                                  @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
                                  @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
@@ -37,11 +37,10 @@ public class UserRootCreator extends Creator {
             statement.executeBatch();
         }
 
-        model.addAttribute("login", login);
-        return "redirect:/db-installer-step3"; // редирект возможен только на GET, поэтому параметры всегда открыты
+        return "redirect:/mvc/db-installer-step3"; // редирект возможен только на GET, поэтому параметры всегда открыты
     }
 
-    @RequestMapping(value = "/db-installer-step2", method = RequestMethod.GET)
+    @RequestMapping(value = "/mvc/db-installer-step2", method = RequestMethod.GET)
     public String createUserRootForm() {
         return "ru/javarush/installer/create-user-root-form";
     }

@@ -1,7 +1,6 @@
 package ru.javarush.installer;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-
 import javax.sql.DataSource;
 
 /**

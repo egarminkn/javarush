@@ -18,7 +18,7 @@ import java.sql.Statement;
 @Controller
 public class TablesUserTodoCreator extends Creator {
 
-    @RequestMapping(value = "/create-tables", method = RequestMethod.POST)
+    @RequestMapping(value = "/mvc/create-tables", method = RequestMethod.POST)
     public String createTables(@RequestParam(value="login", required=false, defaultValue="root")                   String login,
                                @RequestParam(value="pass",  required=false, defaultValue="root")                   String pass,
                                @RequestParam(value="url",   required=false, defaultValue="jdbc:mysql://localhost") String url,
@@ -38,11 +38,10 @@ public class TablesUserTodoCreator extends Creator {
             statement.executeBatch();
         }
 
-        model.addAttribute("login", login);
-        return "redirect:/db-installer-step4"; // редирект возможен только на GET, поэтому параметры всегда открыты
+        return "redirect:/mvc/db-installer-step4"; // редирект возможен только на GET, поэтому параметры всегда открыты
     }
 
-    @RequestMapping(value = "/db-installer-step3", method = RequestMethod.GET)
+    @RequestMapping(value = "/mvc/db-installer-step3", method = RequestMethod.GET)
     public String createTablesForm() {
         return "ru/javarush/installer/create-tables-user-todo-form";
     }

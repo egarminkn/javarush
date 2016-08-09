@@ -6,6 +6,7 @@
 <%@ taglib prefix="fmt"    uri="http://java.sun.com/jsp/jstl/fmt"   %>
 
 <!DOCTYPE HTML>
+<html>
 <head>
     <title>Создание объекта БД</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
