@@ -1,0 +1,64 @@
+<!--suppress WebflowSetupInspection -->
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-2.4.xsd"
+      start-state="calc">
+
+    <var name="model" class="ru.javarush.webflow.Model" />
+    <input name="myHeader" />
+    <input name="exitLink" />
+
+    <view-state id="calc" view="/WEB-INF/jsp/ru/javarush/webflow/calc-page.jsp">
+        <transition on="cube" to="calc-cube"/>
+        <transition on="cube-root" to="calc-cube-root">
+            <set name="flowScope.num" value="requestParameters.num" />
+        </transition>
+        <transition on="cancel" to="cancel-page"/>
+    </view-state>
+
+    <action-state id="calc-cube">
+        <on-entry>
+            <evaluate expression="cube.calcCube(requestParameters.num)" result="flowScope.result" />
+            <set name="model.value" value="result" />
+            <set name="myHeader" value="'Результат вычисления куба числа ' + requestParameters.num" />
+            <set name="exitLink" value="'Завершить вычисление куба'" />
+        </on-entry>
+        <evaluate expression="sign.getSignValue(result)" />
+        <transition on="ZERO"     to="result-page">
+            <set name="model.signValue" value="'ZERO'" />
+        </transition>
+        <transition on="NEGATIVE" to="result-page">
+            <set name="model.signValue" value="'NEGATIVE'" />
+        </transition>
+        <transition on="POSITIVE" to="result-page">
+            <set name="model.signValue" value="'POSITIVE'" />
+        </transition>
+    </action-state>
+
+    <action-state id="calc-cube-root">
+        <on-entry>
+            <evaluate expression="cubeRoot.calcCubeRoot(flowScope.num)" result="flowScope.result" />
+            <set name="model.value" value="flowScope.result" />
+            <set name="myHeader" value="'Результат вычисления куб. корня ' + flowScope.num" />
+            <set name="exitLink" value="'Завершить вычисление куб. корня'" />
+        </on-entry>
+        <evaluate expression="sign.getSignValue(flowScope.result)" />
+        <transition on="ZERO"     to="result-page">
+            <set name="model.signValue" value="T(ru.javarush.webflow.Sign$SignValue).ZERO" type="ru.javarush.webflow.Sign.SignValue"/>
+        </transition>
+        <transition on="NEGATIVE" to="result-page">
+            <set name="model.signValue" value="T(ru.javarush.webflow.Sign$SignValue).NEGATIVE" />
+        </transition>
+        <transition on="POSITIVE" to="result-page">
+            <set name="model.signValue" value="T(ru.javarush.webflow.Sign$SignValue).POSITIVE" />
+        </transition>
+    </action-state>
+
+    <view-state id="result-page" view="/WEB-INF/jsp/ru/javarush/webflow/result-page.jsp">
+        <transition on="cancel" to="cancel-page" />
+    </view-state>
+
+    <end-state id="cancel-page" view="/WEB-INF/jsp/ru/javarush/webflow/cancel-page.jsp"/>
+
+</flow>

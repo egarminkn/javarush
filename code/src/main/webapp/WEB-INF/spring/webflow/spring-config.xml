@@ -1,11 +1,20 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:flow="http://www.springframework.org/schema/webflow-config"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
         http://www.springframework.org/schema/webflow-config
-        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd">
+        http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+    <!--
+        По webflow у нас отдельная xml-ка spring-а с корневым тегом beans
+        => Это отдельный контейнер и нужно отдельное сканирование
+    -->
+    <context:component-scan base-package="ru.javarush.webflow" />
 
     <!-- Включает возможность использования webflow -->
     <flow:flow-executor id="flowExecutor" />
@@ -13,9 +22,9 @@
         <property name="flowExecutor" ref="flowExecutor" />
     </bean>
 
-    <!-- Говорим, что по запросу /db-installer-flow запускать web-поток в файле db-installer-webflow.xml -->
+    <!-- Говорим, что по запросу /db-installer-flow запускать web-поток в файле calc-webflow.xml -->
     <flow:flow-registry id="flowRegistry">
-        <flow:flow-location id="db-installer" path="/WEB-INF/spring/webflow/db-installer-webflow.xml" />
+        <flow:flow-location id="calc" path="/WEB-INF/spring/webflow/calc-webflow.xml" />
     </flow:flow-registry>
     <bean class="org.springframework.webflow.mvc.servlet.FlowHandlerMapping">
         <property name="flowRegistry" ref="flowRegistry"/>
