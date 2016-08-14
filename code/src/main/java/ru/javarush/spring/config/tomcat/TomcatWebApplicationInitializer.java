@@ -2,6 +2,7 @@ package ru.javarush.spring.config.tomcat;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -18,7 +19,8 @@ import javax.servlet.ServletRegistration;
  */
 @Configuration
 @EnableWebMvc
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class}) // При деплое в чистый Tomcat не будет пытаться инициализировать dataSource bean
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class,    // При деплое в чистый Tomcat не будет пытаться инициализировать dataSource bean
+                                  HibernateJpaAutoConfiguration.class}) // Не знаю почему, но лечит ошибку java.lang.ClassCastException: org.springframework.orm.jpa.EntityManagerHolder cannot be cast to org.springframework.orm.hibernate5.SessionHolder
 public class TomcatWebApplicationInitializer implements WebApplicationInitializer {
 
     /**

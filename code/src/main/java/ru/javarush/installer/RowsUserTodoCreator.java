@@ -30,7 +30,7 @@ public class RowsUserTodoCreator extends Creator {
 
             InputStream inputStream = new SequenceInputStream(getClass().getClassLoader().getResourceAsStream("sql/fill-user-table.sql"),
                                                               getClass().getClassLoader().getResourceAsStream("sql/fill-todo-table.sql"));
-            BufferedReader rowsSql = new BufferedReader(new InputStreamReader(inputStream));
+            BufferedReader rowsSql = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
             String nextSql = null;
             while ((nextSql = rowsSql.readLine()) != null) {
                 statement.addBatch(nextSql);
