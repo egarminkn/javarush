@@ -6,6 +6,31 @@
          version="3.0">
 
     <!--
+        Spring boot итак работает нормально.
+        Но Tomcat, который читает этот web.xml, воспринимает данные с формы в виде крякозябр
+        Данный фильтр помогает решить указанную проблему
+    -->
+    <filter>
+        <filter-name>encoding-filter</filter-name>
+        <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>encoding-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!--
     <servlet>
         <servlet-name>flow-dispatcher</servlet-name>
         <servlet-class>

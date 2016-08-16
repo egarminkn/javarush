@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javarush.tasks.crud.model.entities.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -29,7 +30,9 @@ import java.util.List;
 public class UserDaoImpl implements UserDao {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManagerFactory entityManagerFactory; // для JPA Criteria используем чисто JPA-ный EntityManagerFactory
+    @Autowired
+    private SessionFactory sessionFactory; // Для всего остального используем hibernate-прослойку SessionFactory
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
@@ -42,13 +45,13 @@ public class UserDaoImpl implements UserDao {
 //        // uniqueResult берет не первый элемент выборки, а единственный, если тот один
 //        // Если их будет много, то хрен знает, что произойдет
 //        return (User) criteria.uniqueResult();
-        CriteriaBuilder criteriaBuilder = HibernateUtil.getCriteriaBuilder();
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class); // будем выбирать объект User
         Root<User> userRoot = criteriaQuery.from(User.class);                        // из таблицы User
         criteriaQuery.select(userRoot);                                              // будем выбирать объект User
         criteriaQuery.where(criteriaBuilder.equal(userRoot.get("id"), id));          // задаем критерий выборки
 
-        EntityManager entityManager = HibernateUtil.getEntityManager();
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
         return entityManager.createQuery(criteriaQuery).getSingleResult();           // мы знаем, что результат уникален
     }
 
@@ -82,7 +85,11 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void delete(User user) {
-        getSession().delete(user);
+        // Т.к. теперь sessionFactory настроен на работу через entityManagerFactory, то просто
+        // сделать getSession().delete(user) или getSession().remove(user) недостаточно из-за
+        // того, что в entityManagerFactory перед удалением объект должен быть прикреплен.
+        // Поэтому делаем так как ниже или аналогично, но методом remove:
+        getSession().delete(getSession().contains(user) ? user : getSession().merge(user));
     }
 
     @Override

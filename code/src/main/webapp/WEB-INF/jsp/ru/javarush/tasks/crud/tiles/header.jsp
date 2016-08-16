@@ -9,6 +9,7 @@
 <html lang="en">
 <head>
 	<title>Тестовое задание CRUD</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<link href="/css/bootstrap.css" rel="stylesheet" />
 	<link href="/css/ru/javarush/tasks/crud/crud.css" rel="stylesheet" />
 	<script src="/js/jquery-3.1.0.js"></script>
