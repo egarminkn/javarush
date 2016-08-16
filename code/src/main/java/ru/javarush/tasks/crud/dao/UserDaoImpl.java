@@ -56,24 +56,6 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findByName(String name, int passRowsCount, int pageSize) {
-        Query<User> query = getSession().createQuery("select u from User u where u.name = :name", User.class);
-        query.setParameter("name", name);
-        query.setFirstResult(passRowsCount);
-        query.setMaxResults(pageSize);
-        return query.list();
-    }
-
-    @Override
-    public List<User> findPage(int passRowsCount, int pageSize) {
-        // Теперь не SQL, а Native
-        Query<User> query = getSession().createNativeQuery("select * from test.user limit :passRowsCount, :pageSize", User.class);
-        query.setParameter("passRowsCount", passRowsCount);
-        query.setParameter("pageSize", pageSize);
-        return query.list();
-    }
-
-    @Override
     public void create(User user) {
         getSession().persist(user);
     }
@@ -97,6 +79,36 @@ public class UserDaoImpl implements UserDao {
         // uniqueResult берет не первый элемент выборки, а единственный, если тот один
         // Если их будет много, то хрен знает, что произойдет
         return ((BigInteger) getSession().createNativeQuery("select count(*) from test.user").uniqueResult()).longValue();
+    }
+
+    @Override
+    public long totalCount(String name) {
+        CriteriaBuilder criteriaBuilder = entityManagerFactory.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class); // будем выбирать объект Long (количество)
+        Root<User> userRoot = criteriaQuery.from(User.class);                        // из таблицы User
+        criteriaQuery.select(criteriaBuilder.count(userRoot));                       // будем выбирать count
+        criteriaQuery.where(criteriaBuilder.like(userRoot.get("name"), name + "%")); // задаем критерий выборки like
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        return entityManager.createQuery(criteriaQuery).getSingleResult();           // мы знаем, что результат - это одно число
+    }
+
+    @Override
+    public List<User> findPage(int passRowsCount, int pageSize) {
+        // Теперь не SQL, а Native
+        Query<User> query = getSession().createNativeQuery("select * from test.user limit :passRowsCount, :pageSize", User.class);
+        query.setParameter("passRowsCount", passRowsCount);
+        query.setParameter("pageSize", pageSize);
+        return query.list();
+    }
+
+    @Override
+    public List<User> findPage(String name, int passRowsCount, int pageSize) {
+        Query<User> query = getSession().createQuery("select u from User u where u.name like :name", User.class);
+        query.setParameter("name", name + "%");
+        query.setFirstResult(passRowsCount); // limit первое число
+        query.setMaxResults(pageSize);       // limit второе число
+        return query.list();
     }
 
 }

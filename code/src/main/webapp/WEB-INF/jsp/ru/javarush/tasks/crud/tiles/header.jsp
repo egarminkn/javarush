@@ -15,6 +15,9 @@
 	<script src="/js/jquery-3.1.0.js"></script>
 </head>
 <body>
+
+<jsp:include page="flasher.jsp" />
+
 	<nav class="navbar navbar-inverse">
 		<div class="container">
 			<div class="navbar-header">

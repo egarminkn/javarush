@@ -9,9 +9,16 @@
 <jsp:include page="tiles/header.jsp" />
 
 	<div class="container">
-<jsp:include page="tiles/flasher.jsp" />
-
-		<h1>Все пользователи</h1>
+		<h1>
+			<c:choose>
+				<c:when test="${not empty nameFilter}">
+					Результаты поиска по имени "${nameFilter}..."
+				</c:when>
+				<c:otherwise>
+					Все пользователи
+				</c:otherwise>
+			</c:choose>
+		</h1>
 
 <jsp:include page="tiles/paginator.jsp" />
 
@@ -19,7 +26,34 @@
 			<thead>
 				<tr>
 					<th>ID</th>
-					<th>Имя</th>
+					<th>
+						Имя
+						<input type="text" size="10" id="name-filter" style="font-weight: normal;"/>
+						<spring:url var="nameFilterUrl" value="/mvc/crud/users/by" />
+						<script>
+							$('#name-filter').bind("enterKey", function(event) {
+								if ($(this).val().trim() != "") {
+									var form = document.createElement("form");
+									form.setAttribute("method", "get");
+									form.setAttribute("action", "${nameFilterUrl}");
+
+									var hidden = document.createElement("input");
+									hidden.setAttribute("type", "hidden");
+									hidden.setAttribute("name", "name");
+									hidden.setAttribute("value", $(this).val().trim())
+									form.appendChild(hidden);
+
+									document.body.appendChild(form);
+									form.submit();
+								}
+							});
+							$('#name-filter').keyup(function(event) {
+								if(event.keyCode == 13) { // 13 - это клавиша enter
+									$(this).trigger("enterKey");
+								}
+							});
+						</script>
+					</th>
 					<th>Возраст</th>
 					<th>Админ ?</th>
 					<th>Дата создания</th>
@@ -47,13 +81,22 @@
 						<fmt:formatDate pattern="dd.MM.yyyy HH:mm:ss" value="${user.createdDate.time}" />
 					</td>
 					<td>
-						<spring:url var="updateUrl" value="/mvc/crud/users/${user.id}/update" />
+						<c:choose>
+							<c:when test="${not empty nameFilter}">
+								<spring:url var="updateUrl" value="/mvc/crud/users/${user.id}/update?name=${nameFilter}&pageNumber=${page.number}" />
+								<spring:url var="deleteUrl" value="/mvc/crud/users/${user.id}/delete?name=${nameFilter}&pageNumber=${page.number}" />
+							</c:when>
+							<c:otherwise>
+								<spring:url var="updateUrl" value="/mvc/crud/users/${user.id}/update?pageNumber=${page.number}" />
+								<spring:url var="deleteUrl" value="/mvc/crud/users/${user.id}/delete?pageNumber=${page.number}" />
+							</c:otherwise>
+						</c:choose>
+
 						<button class="btn btn-primary" onclick="location.href='${updateUrl}'">
 							Обновить
 						</button>
 
-						<spring:url var="deleteUrl" value="/mvc/crud/users/${user.id}/delete" />
-						<button class="btn btn-danger" onclick="location.href='${deleteUrl}'">
+						<button class="btn btn-danger" onclick="this.disabled=true; location.href='${deleteUrl}'">
 							Удалить
 						</button>
 					</td>

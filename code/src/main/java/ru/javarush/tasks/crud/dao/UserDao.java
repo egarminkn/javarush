@@ -9,11 +9,14 @@ import java.util.List;
 public interface UserDao {
 
     User findById(int id);
-    List<User> findByName(String name, int passRowsCount, int pageSize);
-    List<User> findPage(int passRowsCount, int pageSize);
     void create(User user);
     void update(User user);
     void delete(User user);
+
     long totalCount();
+    long totalCount(String name);
+
+    List<User> findPage(int passRowsCount, int pageSize);
+    List<User> findPage(String name, int passRowsCount, int pageSize);
 
 }

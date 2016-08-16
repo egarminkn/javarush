@@ -25,3 +25,21 @@
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075),
                 0 0 6px #ce8483;
 }
+
+.flasher {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 1;
+}
+
+th, td {
+    text-align: center;
+}
+
+td:nth-of-type(2) {
+    text-align: left;
+    position: relative;
+    left: 40px;
+}

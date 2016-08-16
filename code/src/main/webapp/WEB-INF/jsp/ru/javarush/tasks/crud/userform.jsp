@@ -102,6 +102,8 @@
 			</div>
 
 			<input type="hidden" name="isAddOperation" value="${isAddOperation}" />
+			<input type="hidden" name="pageNumber" value="${pageNumber}" />
+			<input type="hidden" name="nameFilter" value="${nameFilter}" />
 		</form:form>
 	</div>
 

@@ -15,6 +15,10 @@ import ru.javarush.tasks.crud.services.UserService;
 import ru.javarush.tasks.crud.validators.PageValidator;
 import ru.javarush.tasks.crud.validators.UserFormValidator;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+
 /**
  * Created by eGarmin
  */
@@ -47,10 +51,9 @@ public class UserController {
 
     // Список юзеров
     @RequestMapping(value = "/mvc/crud/users", method = RequestMethod.GET)
-    public String showPage(@RequestParam(value="pageNumber", required=false, defaultValue="1") int pageNumber,
+    public String showPage(@RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
                            Model model) {
-        model.addAttribute("users", userService.findPage(pageNumber)); // список пользователей на запрашиваемой странице
-        model.addAttribute("page", new Page(pageNumber, userService.pageCount())); // номер страницы и общее их количество
+        fillModelForListOrFilterPage(null, pageNumber, model);
         return "ru/javarush/tasks/crud/list";
     }
 
@@ -58,11 +61,16 @@ public class UserController {
     // TODO хорошо бы сделать через RestController
     @RequestMapping(value = "/mvc/crud/users/{id}/delete", method = RequestMethod.GET)
     public String deleteUser(@PathVariable("id") int id,
-                             final RedirectAttributes redirectAttributes) {
+                             @RequestParam(value = "pageNumber") int pageNumber,
+                             @RequestParam(value = "name", required = false) String name,
+                             final RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         userService.delete(id);
         redirectAttributes.addFlashAttribute("css", "success");
         redirectAttributes.addFlashAttribute("msg", "Пользователь удален успешно!");
-        return "redirect:/mvc/crud/users";
+        if (name == null) {
+            return "redirect:/mvc/crud/users?pageNumber=" + pageNumber;
+        }
+        return "redirect:/mvc/crud/users/by?name=" + URLEncoder.encode(name, "UTF-8") + "&pageNumber=" + pageNumber;
     }
 
     // Показать форму создания юзера
@@ -77,10 +85,14 @@ public class UserController {
     // Показать форму обновления юзера
     @RequestMapping(value = "/mvc/crud/users/{id}/update", method = RequestMethod.GET)
     public String showUpdateUserForm(@PathVariable("id") int id,
+                                     @RequestParam(value = "pageNumber") int pageNumber,
+                                     @RequestParam(value = "name", required = false) String name,
                                      Model model) {
         User user = userService.findById(id);
         model.addAttribute("userForm", user);
         model.addAttribute("isAddOperation", false);
+        model.addAttribute("pageNumber", pageNumber);
+        model.addAttribute("nameFilter", name);
         return "ru/javarush/tasks/crud/userform";
     }
 
@@ -91,12 +103,16 @@ public class UserController {
     public String saveOrUpdateUser(@ModelAttribute("userForm") @Validated User user,
                                    BindingResult result,
                                    @RequestParam(value = "isAddOperation") boolean isAddOperation,
+                                   @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                                   @RequestParam(value = "nameFilter", required = false) String name,
                                    Model model,
-                                   final RedirectAttributes redirectAttributes) {
+                                   final RedirectAttributes redirectAttributes) throws UnsupportedEncodingException {
         if (result.hasErrors()) {
             // Model пробрасывается вместе с ошибками автоматически,
             // а вот доп. поля типа isAddOperation нужно класть руками
             model.addAttribute("isAddOperation", isAddOperation);
+            model.addAttribute("pageNumber", pageNumber);
+            model.addAttribute("nameFilter", name);
             return "ru/javarush/tasks/crud/userform";
         } else {
             userService.createOrUpdate(user);
@@ -104,17 +120,53 @@ public class UserController {
             redirectAttributes.addFlashAttribute("css", "success");
             if (isAddOperation) {
                 redirectAttributes.addFlashAttribute("msg", "Пользователь создан успешно!");
-            } else {
-                redirectAttributes.addFlashAttribute("msg", "Пользователь обновлен успешно!");
+                return "redirect:/mvc/crud/users?pageNumber=" + userService.pageCount();
             }
+            redirectAttributes.addFlashAttribute("msg", "Пользователь обновлен успешно!");
+            if (name == null) {
+                return "redirect:/mvc/crud/users?pageNumber=" + pageNumber;
+            }
+            return "redirect:/mvc/crud/users/by?name=" + URLEncoder.encode(name, "UTF-8") + "&pageNumber=" + pageNumber;
+        }
+    }
 
-            // FORWARD нельзя, т.к. нет выборки, т.е. нечего показывать
-            // POST / FORWARD / GET
-            // return "ru/javarush/tasks/crud/list";
-
-            // POST / REDIRECT / GET
-            // Сделаем выборку и покажет ее вместе с Flash аттрибутами
+    // Фильтрация по имени
+    @RequestMapping(value = "/mvc/crud/users/by", method = RequestMethod.GET)
+    public String filterByName(@RequestParam(value = "name") String name,
+                               @RequestParam(value = "pageNumber", required = false, defaultValue = "1") int pageNumber,
+                               Model model,
+                               final RedirectAttributes redirectAttributes) {
+        if (fillModelForListOrFilterPage(name, pageNumber, model)) {
+            model.addAttribute("nameFilter", name);
+            return "ru/javarush/tasks/crud/list";
+        } else {
+            redirectAttributes.addFlashAttribute("css", "warning");
+            redirectAttributes.addFlashAttribute("msg", "По Вашему запросу ничего не найдено!");
             return "redirect:/mvc/crud/users";
+        }
+    }
+
+    /**
+     * Вспомогательные методы
+     */
+    /**
+     * @return возвращает удалось ли заполнить список
+     */
+    private boolean fillModelForListOrFilterPage(String name, int pageNumber, Model model) {
+        int pageCount = userService.pageCount(name);
+        if (pageCount > 0) {
+            if (pageNumber < 1) {
+                pageNumber = 1;
+            } else if (pageNumber > pageCount) {
+                pageNumber = pageCount;
+            }
+            List<User> users = userService.findPage(name, pageNumber);
+            model.addAttribute("users", users); // список пользователей на запрашиваемой странице
+            model.addAttribute("page", new Page(pageNumber, userService.pageCount(name))); // номер страницы и общее их количество
+            return true;
+        } else {
+            model.addAttribute("page", new Page(1, 1));
+            return false;
         }
     }
 

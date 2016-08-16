@@ -24,18 +24,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findByName(String name, int pageNumber) {
-        int passRowsCount = (pageNumber - 1) * Page.getPageSize();
-        return userDao.findByName(name, passRowsCount, Page.getPageSize());
-    }
-
-    @Override
-    public List<User> findPage(int pageNumber) {
-        int passRowsCount = (pageNumber - 1) * Page.getPageSize();
-        return userDao.findPage(passRowsCount, Page.getPageSize());
-    }
-
-    @Override
     public void createOrUpdate(User user) {
         // С формы нельзя будет заполнить id и createdDate, но хакер сможет подменить http запрос
         // и что-то нахимичить. Чтобы этого не произошло, перед созданием или обновлением записи
@@ -59,8 +47,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public long pageCount() {
-        return Math.round(Math.ceil((userDao.totalCount() + 0.0) / Page.getPageSize()));
+    public int pageCount() {
+        return pageCount(null);
+    }
+
+    @Override
+    public int pageCount(String name) {
+        long totalCount = 0;
+        if (name == null) {
+            totalCount = userDao.totalCount();
+        } else {
+            totalCount = userDao.totalCount(name);
+        }
+        return (int) Math.round(Math.ceil((totalCount + 0.0) / Page.getPageSize()));
+    }
+
+    @Override
+    public List<User> findPage(String name, int pageNumber) {
+        int passRowsCount = (pageNumber - 1) * Page.getPageSize();
+        if (name == null) {
+            return userDao.findPage(passRowsCount, Page.getPageSize());
+        }
+        return userDao.findPage(name, passRowsCount, Page.getPageSize());
+    }
+
+    @Override
+    public List<User> findPage(int pageNumber) {
+        return findPage(null, pageNumber);
     }
 
 }

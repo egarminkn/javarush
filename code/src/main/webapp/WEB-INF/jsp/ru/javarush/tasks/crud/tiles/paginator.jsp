@@ -31,10 +31,20 @@
 </c:choose>
 <c:set var="numberOfFirstPageInPaginator" value="${page.number - indexPageInPaginator}" />
 
-<spring:url var="firstPageUrl" value="/mvc/crud/users?pageNumber=1" />
-<spring:url var="lastPageUrl" value="/mvc/crud/users?pageNumber=${page.totalCount}" />
-<spring:url var="prevPageUrl" value="/mvc/crud/users?pageNumber=${page.number - 1}" />
-<spring:url var="nextPageUrl" value="/mvc/crud/users?pageNumber=${page.number + 1}" />
+<c:choose>
+	<c:when test="${not empty nameFilter}">
+		<spring:url var="firstPageUrl" value="/mvc/crud/users/by?name=${nameFilter}&pageNumber=1" />
+		<spring:url var="lastPageUrl" value="/mvc/crud/users/by?name=${nameFilter}&pageNumber=${page.totalCount}" />
+		<spring:url var="prevPageUrl" value="/mvc/crud/users/by?name=${nameFilter}&pageNumber=${page.number - 1}" />
+		<spring:url var="nextPageUrl" value="/mvc/crud/users/by?name=${nameFilter}&pageNumber=${page.number + 1}" />
+	</c:when>
+	<c:otherwise>
+		<spring:url var="firstPageUrl" value="/mvc/crud/users?pageNumber=1" />
+		<spring:url var="lastPageUrl" value="/mvc/crud/users?pageNumber=${page.totalCount}" />
+		<spring:url var="prevPageUrl" value="/mvc/crud/users?pageNumber=${page.number - 1}" />
+		<spring:url var="nextPageUrl" value="/mvc/crud/users?pageNumber=${page.number + 1}" />
+	</c:otherwise>
+</c:choose>
 
 <nav>
 	<ul class="pagination">
@@ -79,7 +89,14 @@
 
 		<c:forEach begin="0" end="${countPageLinks - 1}" varStatus="counter">
 			<c:set var="pageNumber" value="${numberOfFirstPageInPaginator + counter.index}" />
-			<spring:url var="pageUrl" value="/mvc/crud/users?pageNumber=${pageNumber}" />
+			<c:choose>
+				<c:when test="${not empty nameFilter}">
+					<spring:url var="pageUrl" value="/mvc/crud/users/by?name=${nameFilter}&pageNumber=${pageNumber}" />
+				</c:when>
+				<c:otherwise>
+					<spring:url var="pageUrl" value="/mvc/crud/users?pageNumber=${pageNumber}" />
+				</c:otherwise>
+			</c:choose>
 			<li class="page-item
 				<c:if test="${page.number == pageNumber}">
 					active
